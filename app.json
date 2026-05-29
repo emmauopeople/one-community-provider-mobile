@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "One Community Provider",
+    "slug": "one-community-provider-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "onecommunityprovider",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "org.cameroonskills.provider"
+    },
+    "android": {
+      "package": "org.cameroonskills.provider",
+      "permissions": [
+        "CAMERA",
+        "READ_MEDIA_IMAGES"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "extra": {
+      "apiBaseUrl": "https://api.cameroonskills.org/api/provider"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-status-bar"
+    ]
+  }
+}
