@@ -21,16 +21,28 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     setError("");
 
-    if (!email || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       setError("Email and password are required.");
       return;
     }
 
     try {
       setLoading(true);
-      await login({ email, password });
+      await login({ email: normalizedEmail, password });
     } catch (err) {
-      setError("Login failed. Please check your email and password.");
+      console.log("LOGIN ERROR:", {
+        message: err?.message,
+        status: err?.response?.status,
+        data: err?.response?.data
+      });
+
+      setError(
+        err?.response?.data?.error ||
+          err?.message ||
+          "Login failed. Please check your email and password."
+      );
     } finally {
       setLoading(false);
     }
