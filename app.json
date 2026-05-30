@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "scheme": "onecommunityprovider",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "assetBundlePatterns": [
       "**/*"
     ],
