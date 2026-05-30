@@ -1,34 +1,64 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  getCurrentProvider,
+  loginProvider,
+  logoutProvider
+} from "../api/authApi";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [provider, setProvider] = useState(null);
-  const [token, setToken] = useState(null);
+  const [initializing, setInitializing] = useState(true);
+
+  useEffect(() => {
+    async function checkExistingSession() {
+      try {
+        const data = await getCurrentProvider();
+
+        if (data?.user) {
+          setProvider(data.user);
+        }
+      } catch (error) {
+        console.log("No active provider session:", error?.message);
+      } finally {
+        setInitializing(false);
+      }
+    }
+
+    checkExistingSession();
+  }, []);
 
   const login = async ({ email, password }) => {
-    // Temporary login for UI testing.
-    // Later this will call the One Community backend.
-    setProvider({
-      id: 1,
-      name: "Test Provider",
-      email
-    });
+    const data = await loginProvider({ email, password });
 
-    setToken("temporary-provider-token");
+    if (!data?.ok || !data?.user) {
+      throw new Error("Login response did not include user session data.");
+    }
+
+    if (data.user.role !== "provider") {
+      throw new Error("Only provider accounts can use this mobile app.");
+    }
+
+    setProvider(data.user);
   };
 
-  const logout = () => {
-    setProvider(null);
-    setToken(null);
+  const logout = async () => {
+    try {
+      await logoutProvider();
+    } catch (error) {
+      console.log("Logout request failed:", error?.message);
+    } finally {
+      setProvider(null);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         provider,
-        token,
-        isAuthenticated: Boolean(token),
+        initializing,
+        isAuthenticated: Boolean(provider),
         login,
         logout
       }}
